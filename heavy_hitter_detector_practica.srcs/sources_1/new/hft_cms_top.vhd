@@ -30,7 +30,7 @@ architecture structural of hft_cms_top is
     -- -------------------------------------------------------------------------
 
     component uart_rx
-        generic ( g_CLKS_PER_BIT : integer := 868 );
+        generic ( g_CLKS_PER_BIT : integer := 50 );
         port (
             i_Clk       : in  std_logic;
             i_RX_Serial : in  std_logic;
@@ -40,7 +40,7 @@ architecture structural of hft_cms_top is
     end component;
 
     component uart_tx
-        generic ( g_CLKS_PER_BIT : integer := 868 );
+        generic ( g_CLKS_PER_BIT : integer := 50 );
         port (
             i_Clk       : in  std_logic;
             i_TX_DV     : in  std_logic;
@@ -281,7 +281,7 @@ begin
     -- -------------------------------------------------------------------------
 
     u_uart_rx: uart_rx
-        generic map ( g_CLKS_PER_BIT => 10 ) -- TEMPORARY: Change from 868 to 10
+        generic map ( g_CLKS_PER_BIT => 50 ) -- TEMPORARY: Change from 868 to 10
         port map (
             i_Clk       => clk_buffered,
             i_RX_Serial => rx_buffered,
@@ -382,7 +382,7 @@ begin
         );
 
     u_uart_tx: uart_tx
-        generic map ( g_CLKS_PER_BIT => 10 ) -- TEMPORARY: Change from 868 to 10
+        generic map ( g_CLKS_PER_BIT => 50 ) -- TEMPORARY: Change from 868 to 10
         port map (
             i_Clk       => clk_buffered,
             i_TX_DV     => tx_dv_sig,

@@ -114,13 +114,7 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/h3_matrix_pkg.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../heavy_hitter_detector_v1_github/heavy_hitter_detector.srcs/sources_1/new/h3_matrix_pkg.vhd">
-        <FileInfo>
+        <FileInfo RelPath="h3_matrix_pkg.vhd">
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -233,7 +227,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../practica/market_stream.txt"/>
+      <File Path="$PIPUSERFILESDIR/mem_init_files/market_stream.txt"/>
       <File Path="$PSRCDIR/sim_1/new/tb_uart_rx_handler.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
