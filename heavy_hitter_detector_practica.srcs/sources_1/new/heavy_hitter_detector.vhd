@@ -10,7 +10,7 @@ entity heavy_hitter_detector is
         -- The price that triggered this update
         key_in          : in  std_logic_vector(31 downto 0);
         
-        -- The 7 parallel counts from the Count-min Sketch rows
+        -- The 7 parallel counts from the Count-Min Sketch rows
         count_row_1     : in  std_logic_vector(31 downto 0);
         count_row_2     : in  std_logic_vector(31 downto 0);
         count_row_3     : in  std_logic_vector(31 downto 0);
@@ -24,6 +24,10 @@ entity heavy_hitter_detector is
         
         -- The target threshold (can be dynamically updated from a CPU)
         threshold       : in  std_logic_vector(31 downto 0);
+        
+        -- AXI-Stream Handshake
+        i_tready        : in  std_logic;
+        o_tready        : out std_logic;
         
         -- Outputs
         key_out         : out std_logic_vector(31 downto 0);
@@ -47,7 +51,15 @@ architecture rtl of heavy_hitter_detector is
     signal key_stg2   : std_logic_vector(31 downto 0);
     signal valid_stg2 : std_logic;
 
+    -- Force Vivado Synthesis to replicate key_stg2 locally (32 loads -> 4 clones of 8 loads)
+    -- Cuts cross-die routing delay into the 16-slot logger with zero extra clock cycles
+    attribute max_fanout : integer;
+    attribute max_fanout of key_stg2 : signal is 8;
+
 begin
+
+    -- The detector itself doesn't generate backpressure, it just passes it through
+    o_tready <= i_tready;
 
     process(clk, rst)
     begin
@@ -65,32 +77,33 @@ begin
             
         elsif rising_edge(clk) then
             
-            -- =================================================================
-            -- STAGE 1: Parallel Comparisons
-            -- =================================================================
-            -- Check if each individual row's count meets or exceeds the threshold
-            if unsigned(count_row_1) >= unsigned(threshold) then comp_1 <= '1'; else comp_1 <= '0'; end if;
-            if unsigned(count_row_2) >= unsigned(threshold) then comp_2 <= '1'; else comp_2 <= '0'; end if;
-            if unsigned(count_row_3) >= unsigned(threshold) then comp_3 <= '1'; else comp_3 <= '0'; end if;
-            if unsigned(count_row_4) >= unsigned(threshold) then comp_4 <= '1'; else comp_4 <= '0'; end if;
-            if unsigned(count_row_5) >= unsigned(threshold) then comp_5 <= '1'; else comp_5 <= '0'; end if;
-            if unsigned(count_row_6) >= unsigned(threshold) then comp_6 <= '1'; else comp_6 <= '0'; end if;
-            if unsigned(count_row_7) >= unsigned(threshold) then comp_7 <= '1'; else comp_7 <= '0'; end if;
-            
-            -- Pass the key and valid signals forward
-            key_stg1   <= key_in;
-            valid_stg1 <= valid_in;
-            
-            -- =================================================================
-            -- STAGE 2: The Multi-Input AND Gate
-            -- =================================================================
-            -- If all 7 comparators output a '1', the AND chain evaluates to '1'
-            heavy_hitter_flag <= comp_1 and comp_2 and comp_3 and comp_4 and 
-                                 comp_5 and comp_6 and comp_7;
-            
-            -- Pass the key and valid signals forward again
-            key_stg2   <= key_stg1;
-            valid_stg2 <= valid_stg1;
+            -- Only advance the pipeline if the downstream logger is ready
+            if i_tready = '1' then
+                -- =================================================================
+                -- STAGE 1: Parallel Comparisons
+                -- =================================================================
+                if unsigned(count_row_1) >= unsigned(threshold) then comp_1 <= '1'; else comp_1 <= '0'; end if;
+                if unsigned(count_row_2) >= unsigned(threshold) then comp_2 <= '1'; else comp_2 <= '0'; end if;
+                if unsigned(count_row_3) >= unsigned(threshold) then comp_3 <= '1'; else comp_3 <= '0'; end if;
+                if unsigned(count_row_4) >= unsigned(threshold) then comp_4 <= '1'; else comp_4 <= '0'; end if;
+                if unsigned(count_row_5) >= unsigned(threshold) then comp_5 <= '1'; else comp_5 <= '0'; end if;
+                if unsigned(count_row_6) >= unsigned(threshold) then comp_6 <= '1'; else comp_6 <= '0'; end if;
+                if unsigned(count_row_7) >= unsigned(threshold) then comp_7 <= '1'; else comp_7 <= '0'; end if;
+                
+                -- Pass the key and valid signals forward
+                key_stg1   <= key_in;
+                valid_stg1 <= valid_in;
+                
+                -- =================================================================
+                -- STAGE 2: The Multi-Input AND Gate
+                -- =================================================================
+                heavy_hitter_flag <= comp_1 and comp_2 and comp_3 and comp_4 and 
+                                     comp_5 and comp_6 and comp_7;
+                
+                -- Pass the key and valid signals forward again
+                key_stg2   <= key_stg1;
+                valid_stg2 <= valid_stg1;
+            end if;
             
         end if;
     end process;

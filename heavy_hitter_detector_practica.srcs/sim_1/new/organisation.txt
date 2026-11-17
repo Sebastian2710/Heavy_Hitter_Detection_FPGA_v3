@@ -1,0 +1,16 @@
+1. Valid Unit-Level Testbenches
+These files independently verify sub-modules and do not care about the top-level wrapper. They should all be kept in your active simulation directory to prove your core math and I/O logic work in isolation.
+	tb_h3_hash_computation.vhd: Validates the V1 32-stage hashing pipeline.
+	tb_hash_table_pipeline.vhd: Validates the V1 BRAM read-after-write hazard resolution.
+	tb_uart_rx_handler.vhd: Validates the V2 UART deserializer and opcode logic.
+	tb_uart_tx_controller.vhd: Validates the V2 UART readout and logger clearing.
+	UART_TB.vhd: The raw V2 Nandland UART loopback test.
+
+2. Obsolete System-Level Testbenches (Require Replacement)
+	tb_hft_cms_top.vhd: contains uart module tested but bugged core   - comm with uart broken
+        tb_hft_cms_top_final.vhd : contains fixed core, stripped of uart  - comm directly with core
+	tb_hft_cms_top_physical.vhd : contains fixed core + uart          - comm with uart fixed
+
+Total Processing Time : 0.006460 s = 6.460.000 ns
+Throughput                       : 1,547,988 packets/second
+Average Latency             : 646 ns/packet

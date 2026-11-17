@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_hft_cms_top_verification_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="h3_matrix_pkg" />
+            <top_module name="tb_hft_cms_top_verification" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="71.883825050 ms"></ZoomStartTime>
+      <ZoomEndTime time="136.366367148 ms"></ZoomEndTime>
+      <Cursor1Time time="91.053400000 ms"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="226"></NameColumnWidth>
+      <ValueColumnWidth column_width="127"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/flush_req_sig" type="logic">
+      <obj_property name="ElementShortName">flush_req_sig</obj_property>
+      <obj_property name="ObjectShortName">flush_req_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/flush_en_sig" type="logic">
+      <obj_property name="ElementShortName">flush_en_sig</obj_property>
+      <obj_property name="ObjectShortName">flush_en_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/flush_addr_sig" type="array">
+      <obj_property name="ElementShortName">flush_addr_sig[10:0]</obj_property>
+      <obj_property name="ObjectShortName">flush_addr_sig[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/flush_done_sig" type="logic">
+      <obj_property name="ElementShortName">flush_done_sig</obj_property>
+      <obj_property name="ObjectShortName">flush_done_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/clear_log_sig" type="logic">
+      <obj_property name="ElementShortName">clear_log_sig</obj_property>
+      <obj_property name="ObjectShortName">clear_log_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/rx_tready_sig" type="logic">
+      <obj_property name="ElementShortName">rx_tready_sig</obj_property>
+      <obj_property name="ObjectShortName">rx_tready_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/sys_tready_sig" type="logic">
+      <obj_property name="ElementShortName">sys_tready_sig</obj_property>
+      <obj_property name="ObjectShortName">sys_tready_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/hh_valid_sig" type="logic">
+      <obj_property name="ElementShortName">hh_valid_sig</obj_property>
+      <obj_property name="ObjectShortName">hh_valid_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_hft_cms_top_verification/uut/is_hh_sig" type="logic">
+      <obj_property name="ElementShortName">is_hh_sig</obj_property>
+      <obj_property name="ObjectShortName">is_hh_sig</obj_property>
+   </wvobject>
+</wave_config>

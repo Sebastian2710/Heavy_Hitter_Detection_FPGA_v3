@@ -19,6 +19,10 @@ entity cms_row is
         flush_enable      : in  std_logic;
         flush_addr        : in  std_logic_vector(10 downto 0);
         
+        -- AXI-Stream Handshake
+        i_tready          : in  std_logic;
+        o_tready          : out std_logic;
+
         -- Outputs to the Heavy Hitter Detector
         updated_count_out : out std_logic_vector(31 downto 0);
         valid_out         : out std_logic
@@ -38,6 +42,8 @@ architecture structural of cms_row is
             key_in       : in  std_logic_vector(31 downto 0);
             activity_in  : in  std_logic_vector(31 downto 0);
             valid_in     : in  std_logic;
+            i_tready     : in  std_logic;
+            o_tready     : out std_logic;
             hash_out     : out std_logic_vector(10 downto 0);
             activity_out : out std_logic_vector(31 downto 0);
             valid_out    : out std_logic
@@ -52,6 +58,8 @@ architecture structural of cms_row is
             hash_in           : in  std_logic_vector(10 downto 0);
             activity_in       : in  std_logic_vector(31 downto 0);
             valid_in          : in  std_logic;
+            i_tready          : in  std_logic;
+            o_tready          : out std_logic;
             -- Flush Override Signals
             flush_enable      : in  std_logic;
             flush_addr        : in  std_logic_vector(10 downto 0);
@@ -64,7 +72,7 @@ architecture structural of cms_row is
     signal intermediate_hash     : std_logic_vector(10 downto 0);
     signal intermediate_activity : std_logic_vector(31 downto 0);
     signal intermediate_valid    : std_logic;
-
+    signal intermediate_ready    : std_logic;
 begin
 
     -- Instantiate the 32-stage Hash Pipeline
@@ -78,6 +86,8 @@ begin
             key_in       => key_in,
             activity_in  => activity_in,
             valid_in     => valid_in,
+            i_tready     => intermediate_ready,
+            o_tready     => o_tready,
             
             -- Route outputs to the intermediate wires
             hash_out     => intermediate_hash,
@@ -95,6 +105,8 @@ begin
             hash_in           => intermediate_hash,
             activity_in       => intermediate_activity,
             valid_in          => intermediate_valid,
+            i_tready          => i_tready,
+            o_tready          => intermediate_ready,
             -- NEW: Wire the signals through
             flush_enable      => flush_enable,
             flush_addr        => flush_addr,
@@ -103,14 +115,14 @@ begin
         );
 
     -- Align the final 'valid' signal for the Heavy Hitter Detector.
-    -- The memory pipeline's combinatorial addition finishes exactly 1 clock cycle 
-    -- after intermediate_valid goes high (Stage 2).
-    process(clk, rst)
+    process(clk)
     begin
-        if rst = '1' then
-            valid_out <= '0';
-        elsif rising_edge(clk) then
-            valid_out <= intermediate_valid;
+        if rising_edge(clk) then
+            if rst = '1' then
+                valid_out <= '0';
+            elsif i_tready = '1' then
+                valid_out <= intermediate_valid;
+            end if;
         end if;
     end process;
 
